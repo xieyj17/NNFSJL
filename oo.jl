@@ -96,3 +96,72 @@ s = Squares(3)
 r = Rectangles(3,2)
 
 @show combine_area(c,s)
+
+struct Polynomial{R}
+    coeff::Vector{R}
+end
+
+function (p::Polynomial)(x)
+    val = p.coeff[end]
+    for coeff in p.coeff[end-1:-1:1]
+        val = val*x + coeff
+    end
+    val
+end
+
+p = Polynomial([1,10,100])
+
+p(3)
+
+struct Poin2{T<:Real}
+    x::T
+    y::T
+end
+
+struct Point3{T<:Real}
+    x::T
+    y::T
+    Point3{T}(x,y) where {T<:Real} = new(x,y)
+end
+
+Poin2(x::Real, y::Real) = Point(promote(x,y)...)
+
+macro containervariable(container, element)
+    return esc(:($(Symbol(container,element)) = $container[$element]))
+end
+
+@containervariable letters 1
+
+@macroexpand @containervariable letters 2
+
+macro unless(test_expr, branch_expr)
+  quote
+    if !$test_expr
+      $branch_expr
+    end
+  end
+end
+
+array = [1, 2, 'b']
+@unless 2 ∉ array println("array does contain 2")
+
+struct HasInterestingField
+    data::String
+end
+
+double(hif::HasInterestingField) = hif.data^2
+shout(hif::HasInterestingField) = uppercase(string(hif.data, "!"))
+
+
+struct WantInterestingField
+    interesting::HasInterestingField
+    WantInterestingField(data) = new(HasInterestingField(data))
+end
+
+for method in (:double, :shout)
+    @eval $method(wif::WantInterestingField) = $method(wif.interesting)
+end
+
+wif = WantInterestingField("foo")
+@show shout(wif)
+@show double(wif);
