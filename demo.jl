@@ -18,3 +18,7 @@ d1 = dense(2, 3)
 forward!(d1, X)
 
 r1 = relu(d1)
+forward!(r1)
+
+s1 = softmax(d1)
+forward!(s1)
