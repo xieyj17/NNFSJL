@@ -34,8 +34,8 @@ function forward!(softmax_af::Softmax)
     exp_input = exp.(input)
     deno = sum(exp_input, dims = 2)
     new_output = input
-    for i in 1:size(exp_input)[1]
-        new_output[i,:] = exp_input[i,:] ./ deno[i]
+    for i = 1:size(exp_input)[1]
+        new_output[i, :] = exp_input[i, :] ./ deno[i]
     end
     softmax_af.output = new_output
 end
