@@ -14,6 +14,8 @@ end
 using Plots
 scatter(X[:,1], X[:,2], marker_z = y, legend=false, color = :jet)
 
+my = onehotencoder(y)
+
 d1 = dense(2, 3)
 forward!(d1, X)
 
@@ -22,3 +24,6 @@ forward!(r1)
 
 s1 = softmax(d1)
 forward!(s1)
+
+c1 = categorical_cross_entropy(s1)
+forward!(c1, my)
