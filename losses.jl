@@ -37,3 +37,37 @@ function forward!(cce::CategoricalCrossEntropy, y::AbstractArray)
 
     cce.output = avg_loss
 end
+
+
+mutable struct Accuracy <: Loss
+    input::Array{Float64,2}
+    accuracy::Float64
+end
+
+function accuracy(sm_layer::Softmax)
+    acc = Accuracy(sm_layer.output, 0.0)
+end
+
+
+function forward!(acc::Accuracy, y::AbstractArray)
+    sm_res = acc.input
+    number_of_sample = size(sm_res)[1]
+
+    predictions = argmax(sm_res, dims = 2)
+    pred = [predictions[i][2] for i = 1:number_of_sample]
+
+    if length(size(y)) == 1
+        y = convert.(Int, y)
+        if minimum(y) == 0
+            y = y .+ 1
+        end
+        res = sum(y .== pred) / number_of_sample
+    elseif length(size(y)) == 2
+        y = convert.(Int, y)
+        y = argmax(y, dims = 2)
+        y = [y[i][2] for i = 1:number_of_sample]
+        res = sum(y .== pred) / number_of_sample
+    end
+
+    acc.accuracy = res
+end
