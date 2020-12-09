@@ -14,12 +14,8 @@ function dense(n_inputs::Int64, n_neurons::Int64)
     return layer
 end
 
-#k = Initialize_Layer(10,3)
-
 function forward!(layer::DenseLayer, inputs::Array{Float64,2})
     raw_output = inputs * layer.weights
     new_output = raw_output .+ layer.biases
     layer.output = new_output
 end
-
-#Dense_Forward(k, inputs)

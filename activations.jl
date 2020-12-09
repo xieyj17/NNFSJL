@@ -39,5 +39,3 @@ function forward!(softmax_af::Softmax)
     end
     softmax_af.output = new_output
 end
-
-#softmax_af = s1
