@@ -34,4 +34,4 @@ c1 = categorical_cross_entropy(s1)
 forward!(c1, my)
 
 a1 = accuracy(s1)
-forward!(a1, y)
+forward!(a1, my)
