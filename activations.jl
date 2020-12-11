@@ -3,6 +3,10 @@ abstract type Activation end
 mutable struct ReLU <: Activation
     layer::DenseLayer
     output::Array{Float64,2}
+    inputs::Array{Float64,2}
+    output::Array{Float64,2}
+    dinputs::Array{Float64,2}
+    doutput::Array{Float64,2}
 end
 
 function relu(layer::DenseLayer)
@@ -16,6 +20,9 @@ function forward!(relu_af::ReLU)
     new_output = max.(0, input)
     relu_af.output = new_output
 end
+
+function backward!(relu::ReLU, dvalues::Array{Float64,2})
+    new_dinputs = copy(dvalues)
 
 
 mutable struct Softmax <: Activation

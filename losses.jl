@@ -4,10 +4,12 @@ abstract type Loss end
 mutable struct CategoricalCrossEntropy <: Loss
     input::Array{Float64,2}
     output::Float64
+    dinputs::::Array{Float64,2}
 end
 
 function categorical_cross_entropy(sm_layer::Softmax)
-    cce = CategoricalCrossEntropy(sm_layer.output, 0.0)
+    cce = CategoricalCrossEntropy(sm_layer.output, 0.0,
+    zeros(size(sm_layer.output)))
 end
 
 function forward!(cce::CategoricalCrossEntropy, y::AbstractArray)
@@ -36,6 +38,17 @@ function forward!(cce::CategoricalCrossEntropy, y::AbstractArray)
     avg_loss = sum(neg_log) / number_of_sample
 
     cce.output = avg_loss
+end
+
+function backward!(cce::CategoricalCrossEntropy,
+    dvalues::dvalues::Array{Float64,2}, y::AbstractArray)
+    n_of_samples = size(dvalues)[1]
+    n_of_labels = size(dvalues)[2]
+    if length(size(y)) == 1
+        y = onehotencoder(y)
+    end
+    cce.dinputs = -y ./ dvalues
+    cce.dinputs = cce.dinputs / n_of_samples
 end
 
 
